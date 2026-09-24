@@ -26,7 +26,11 @@ const HIGHLIGHTS = [
   },
 ] as const
 
-const LAUNCH_DATE = process.env.NEXT_PUBLIC_LAUNCH_DATE || "2026-03-01T00:00:00"
+const DEFAULT_LAUNCH_DATE = "2027-03-01T00:00:00"
+const LAUNCH_DATE =
+  process.env.NEXT_PUBLIC_LAUNCH_DATE && !Number.isNaN(new Date(process.env.NEXT_PUBLIC_LAUNCH_DATE).getTime())
+    ? process.env.NEXT_PUBLIC_LAUNCH_DATE
+    : DEFAULT_LAUNCH_DATE
 
 const HINT_CONFIG = {
   enabled: true,

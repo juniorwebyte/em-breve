@@ -23,16 +23,26 @@ export function CountdownTimer({ targetDate }: CountdownTimerProps) {
 
   useEffect(() => {
     const calculateTimeLeft = () => {
-      const difference = new Date(targetDate).getTime() - new Date().getTime()
+      const targetTime = new Date(targetDate).getTime()
 
-      if (difference > 0) {
-        setTimeLeft({
-          dias: Math.floor(difference / (1000 * 60 * 60 * 24)),
-          horas: Math.floor((difference / (1000 * 60 * 60)) % 24),
-          minutos: Math.floor((difference / 1000 / 60) % 60),
-          segundos: Math.floor((difference / 1000) % 60),
-        })
+      if (Number.isNaN(targetTime)) {
+        setTimeLeft({ dias: 0, horas: 0, minutos: 0, segundos: 0 })
+        return
       }
+
+      const difference = targetTime - Date.now()
+
+      if (difference <= 0) {
+        setTimeLeft({ dias: 0, horas: 0, minutos: 0, segundos: 0 })
+        return
+      }
+
+      setTimeLeft({
+        dias: Math.floor(difference / (1000 * 60 * 60 * 24)),
+        horas: Math.floor((difference / (1000 * 60 * 60)) % 24),
+        minutos: Math.floor((difference / 1000 / 60) % 60),
+        segundos: Math.floor((difference / 1000) % 60),
+      })
     }
 
     calculateTimeLeft()
