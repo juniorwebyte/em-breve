@@ -124,23 +124,6 @@ export function DevQuiz({ onClose }: DevQuizProps) {
   const [timeLeft, setTimeLeft] = useState(30)
   const [usedHint, setUsedHint] = useState(false)
 
-  // Timer para cada pergunta
-  useEffect(() => {
-    if (showResult || gameCompleted) return
-
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          handleAnswer(-1) // Tempo esgotado
-          return 30
-        }
-        return prev - 1
-      })
-    }, 1000)
-
-    return () => clearInterval(timer)
-  }, [currentQuestion, showResult, gameCompleted])
-
   const handleAnswer = useCallback(
     (answerIndex: number) => {
       const question = questions[currentQuestion]
@@ -162,6 +145,23 @@ export function DevQuiz({ onClose }: DevQuizProps) {
     },
     [currentQuestion, timeLeft, usedHint],
   )
+
+  // Timer para cada pergunta
+  useEffect(() => {
+    if (showResult || gameCompleted) return
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          handleAnswer(-1) // Tempo esgotado
+          return 30
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [currentQuestion, showResult, gameCompleted, handleAnswer])
 
   const nextQuestion = useCallback(() => {
     if (currentQuestion < questions.length - 1) {

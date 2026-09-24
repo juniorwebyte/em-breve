@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useCallback, useMemo, useEffect } from "react"
+import { useState, useCallback, useMemo } from "react"
 import { companies, categoryColors, categoryLabels, type Company } from "@/lib/companies-data"
 import {
   Shrub as Hub,
@@ -32,29 +32,24 @@ const iconMap: Record<string, React.ElementType> = {
   Shield,
 }
 
+const positions: Record<string, { x: number; y: number }> = {
+  "webyte-hub": { x: 50, y: 50 },
+  "vendi-aqui": { x: 25, y: 30 },
+  "webyte-pay": { x: 75, y: 30 },
+  "webyte-play": { x: 20, y: 60 },
+  "webyte-music": { x: 35, y: 75 },
+  "webyte-studios": { x: 15, y: 85 },
+  "12aqui": { x: 80, y: 55 },
+  "ploutos-ledger": { x: 85, y: 75 },
+  "edupaz-academy": { x: 60, y: 85 },
+  sigma: { x: 45, y: 20 },
+  "add-proxy": { x: 65, y: 15 },
+}
+
 export function EcosystemMap() {
   const [activeCompany, setActiveCompany] = useState<Company | null>(null)
   const [hoveredCompany, setHoveredCompany] = useState<string | null>(null)
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    setIsMobile(window.innerWidth < 768)
-  }, [])
-
-  // Posições dos nós no mapa (em porcentagem)
-  const positions: Record<string, { x: number; y: number }> = {
-    "webyte-hub": { x: 50, y: 50 },
-    "vendi-aqui": { x: 25, y: 30 },
-    "webyte-pay": { x: 75, y: 30 },
-    "webyte-play": { x: 20, y: 60 },
-    "webyte-music": { x: 35, y: 75 },
-    "webyte-studios": { x: 15, y: 85 },
-    "12aqui": { x: 80, y: 55 },
-    "ploutos-ledger": { x: 85, y: 75 },
-    "edupaz-academy": { x: 60, y: 85 },
-    sigma: { x: 45, y: 20 },
-    "add-proxy": { x: 65, y: 15 },
-  }
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768
 
   const activeConnections = useMemo(() => {
     if (!hoveredCompany) return []

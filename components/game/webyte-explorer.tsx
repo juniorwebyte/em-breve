@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useCallback, useEffect, useRef } from "react"
+import { useState, useCallback, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { companies } from "@/lib/companies-data"
 import {
@@ -132,7 +132,6 @@ interface GameState {
   failedAttempts: number
   showHint: boolean
   currentHint: { from: string; to: string } | null
-  gameCompleted: boolean
 }
 
 const UNLOCK_PHRASES = [
@@ -148,59 +147,34 @@ interface WebyteExplorerProps {
   skipUnlock?: boolean
 }
 
+const getRandomUnlockPhrase = () => UNLOCK_PHRASES[Math.floor(Math.random() * UNLOCK_PHRASES.length)]
+
 export function WebyteExplorer({ skipUnlock = false }: WebyteExplorerProps) {
   const router = useRouter()
 
-  const [gameState, setGameState] = useState<GameState>({
+  const [gameState, setGameState] = useState<GameState>(() => ({
     isPlaying: skipUnlock,
     isUnlocked: skipUnlock,
     selectedNodes: [],
     discoveredConnections: [],
     score: 0,
     inputValue: "",
-    typingPhrase: UNLOCK_PHRASES[Math.floor(Math.random() * UNLOCK_PHRASES.length)],
+    typingPhrase: getRandomUnlockPhrase(),
     showResult: false,
     lastResult: null,
     failedAttempts: 0,
     showHint: false,
     currentHint: null,
-    gameCompleted: false,
-  })
+  }))
 
   const inputRef = useRef<HTMLInputElement>(null)
   const [showTutorial, setShowTutorial] = useState(true)
-
-  useEffect(() => {
-    if (skipUnlock) {
-      setGameState((prev) => ({
-        ...prev,
-        isPlaying: true,
-        isUnlocked: true,
-      }))
-    }
-  }, [skipUnlock])
-
-  useEffect(() => {
-    if (gameState.inputValue.toUpperCase() === gameState.typingPhrase) {
-      setGameState((prev) => ({
-        ...prev,
-        isUnlocked: true,
-        isPlaying: true,
-        inputValue: "",
-      }))
-    }
-  }, [gameState.inputValue, gameState.typingPhrase])
 
   const totalConnections = specialConnections.length
   const discoveredSpecial = gameState.discoveredConnections.filter((c) =>
     specialConnections.some((s) => (s.from === c.from && s.to === c.to) || (s.from === c.to && s.to === c.from)),
   ).length
-
-  useEffect(() => {
-    if (discoveredSpecial === totalConnections && !gameState.gameCompleted && gameState.isPlaying) {
-      setGameState((prev) => ({ ...prev, gameCompleted: true }))
-    }
-  }, [discoveredSpecial, totalConnections, gameState.gameCompleted, gameState.isPlaying])
+  const gameCompleted = discoveredSpecial === totalConnections && gameState.isPlaying
 
   const getHint = useCallback(() => {
     const undiscovered = specialConnections.filter(
@@ -222,7 +196,7 @@ export function WebyteExplorer({ skipUnlock = false }: WebyteExplorerProps) {
 
   const handleNodeClick = useCallback(
     (companyId: string) => {
-      if (!gameState.isPlaying || gameState.showResult || gameState.gameCompleted) return
+      if (!gameState.isPlaying || gameState.showResult || gameCompleted) return
 
       setGameState((prev) => {
         const newSelected = [...prev.selectedNodes]
@@ -293,7 +267,7 @@ export function WebyteExplorer({ skipUnlock = false }: WebyteExplorerProps) {
         return { ...prev, selectedNodes: newSelected }
       })
     },
-    [gameState.isPlaying, gameState.showResult, gameState.gameCompleted],
+    [gameState.isPlaying, gameState.showResult, gameCompleted],
   )
 
   const closeResult = useCallback(() => {
@@ -312,13 +286,12 @@ export function WebyteExplorer({ skipUnlock = false }: WebyteExplorerProps) {
       discoveredConnections: [],
       score: 0,
       inputValue: "",
-      typingPhrase: UNLOCK_PHRASES[Math.floor(Math.random() * UNLOCK_PHRASES.length)],
+      typingPhrase: getRandomUnlockPhrase(),
       showResult: false,
       lastResult: null,
       failedAttempts: 0,
       showHint: false,
       currentHint: null,
-      gameCompleted: false,
     })
     setShowTutorial(true)
   }, [])
@@ -353,7 +326,16 @@ export function WebyteExplorer({ skipUnlock = false }: WebyteExplorerProps) {
                 ref={inputRef}
                 type="text"
                 value={gameState.inputValue}
-                onChange={(e) => setGameState((prev) => ({ ...prev, inputValue: e.target.value }))}
+                onChange={(e) => {
+                  const nextValue = e.target.value
+                  setGameState((prev) => ({
+                    ...prev,
+                    inputValue: nextValue,
+                    ...(nextValue.toUpperCase() === prev.typingPhrase
+                      ? { isUnlocked: true, isPlaying: true, inputValue: "" }
+                      : {}),
+                  }))
+                }}
                 placeholder="Digite aqui..."
                 className="text-center text-lg font-mono uppercase tracking-wider"
                 autoFocus
@@ -381,7 +363,7 @@ export function WebyteExplorer({ skipUnlock = false }: WebyteExplorerProps) {
       </AnimatePresence>
 
       <AnimatePresence>
-        {gameState.isUnlocked && !gameState.gameCompleted && (
+        {gameState.isUnlocked && !gameCompleted && (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -622,7 +604,7 @@ export function WebyteExplorer({ skipUnlock = false }: WebyteExplorerProps) {
       </AnimatePresence>
 
       <AnimatePresence>
-        {gameState.gameCompleted && (
+        {gameCompleted && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

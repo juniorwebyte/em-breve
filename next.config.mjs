@@ -1,6 +1,14 @@
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone', // Melhor para deploy em VPS/Docker
+  turbopack: {
+    root: __dirname,
+  },
   typescript: {
     ignoreBuildErrors: false,
   },

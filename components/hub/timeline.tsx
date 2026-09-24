@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { companies, categoryLabels, type Company } from "@/lib/companies-data"
 import {
   Shrub as Hub,
@@ -50,11 +50,7 @@ const statusColors = {
 
 export function Timeline() {
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null)
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    setIsMobile(window.innerWidth < 768)
-  }, [])
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768
 
   const sortedCompanies = [...companies].sort((a, b) => a.year - b.year)
   const years = [...new Set(sortedCompanies.map((c) => c.year))]

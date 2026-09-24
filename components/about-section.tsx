@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Code2, Palette, Rocket, Shield, Zap, Globe } from "lucide-react"
+import { ArrowRight, CheckCircle2, Code2, Palette, Rocket, Shield, Zap, Globe } from "lucide-react"
 
 const features = [
   {
@@ -37,15 +37,50 @@ const features = [
   },
 ]
 
+const processSteps = [
+  {
+    title: "Diagnóstico",
+    text: "Entendemos o seu nicho, público e objetivos para formar a base da estratégia digital.",
+  },
+  {
+    title: "Prototipagem",
+    text: "Estruturamos a proposta visual, a narrativa e a experiência para comunicar valor com clareza.",
+  },
+  {
+    title: "Entrega",
+    text: "Desenvolvemos, otimizamos e validamos a solução para que ela esteja pronta para conversão.",
+  },
+]
+
+const faqItems = [
+  {
+    question: "Qual tipo de projeto você desenvolve?",
+    answer:
+      "Trabalhamos com sites institucionais, landing pages, portais, experiências de marca e projetos focados em conversão, presença digital e crescimento de demanda.",
+  },
+  {
+    question: "O processo é personalizado?",
+    answer:
+      "Sim. Cada projeto começa com diagnóstico e estratégia para garantir que a solução reflita sua proposta de valor, público e objetivos reais.",
+  },
+  {
+    question: "Vocês cuidam de design e desenvolvimento?",
+    answer:
+      "Sim. Nossa execução combina estratégia, design, UX e desenvolvimento em uma mesma linha, para reduzir fricção e entregar uma experiência mais coesa.",
+  },
+  {
+    question: "Como funciona a primeira conversa?",
+    answer:
+      "A conversa inicial serve para entender sua necessidade, seu contexto e o que você quer alcançar. A partir daí, definimos a melhor direção para o projeto.",
+  },
+]
+
 export function AboutSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const [isVisible, setIsVisible] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768
 
   useEffect(() => {
-    // Detectar mobile
-    setIsMobile(window.innerWidth < 768)
-
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -111,6 +146,83 @@ export function AboutSection() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="mt-12 md:mt-16">
+          <div className="rounded-3xl border border-border/60 bg-secondary/20 p-6 md:p-8 shadow-[0_0_0_1px_rgba(255,255,255,0.02)]">
+            <div className="mb-6 text-center">
+              <p className="text-sm font-medium uppercase tracking-[0.2em] text-primary">Como trabalhamos</p>
+              <h3 className="mt-3 text-2xl md:text-3xl font-bold text-foreground">Estratégia clara, execução precisa</h3>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              {processSteps.map((step, index) => (
+                <div key={step.title} className="rounded-2xl border border-border/50 bg-background/40 p-5">
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <CheckCircle2 className="h-5 w-5" />
+                  </div>
+                  <div className="mb-2 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                    0{index + 1}
+                  </div>
+                  <h4 className="mb-2 text-lg font-semibold text-foreground">{step.title}</h4>
+                  <p className="text-sm leading-6 text-muted-foreground">{step.text}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-10 grid gap-4 md:grid-cols-3">
+              <div className="rounded-2xl border border-border/50 bg-background/40 p-5">
+                <p className="text-sm font-medium uppercase tracking-[0.2em] text-primary">Foco</p>
+                <h4 className="mt-3 text-lg font-semibold text-foreground">Presença que comunica valor</h4>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  Sua marca precisa ser vista com clareza e gerar confiança antes mesmo do primeiro contato.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-border/50 bg-background/40 p-5">
+                <p className="text-sm font-medium uppercase tracking-[0.2em] text-primary">Experiência</p>
+                <h4 className="mt-3 text-lg font-semibold text-foreground">Fluxo mais simples e envolvente</h4>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  Melhoramos a jornada para facilitar a decisão, reduzir atrito e aumentar a percepção de qualidade.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-border/50 bg-background/40 p-5">
+                <p className="text-sm font-medium uppercase tracking-[0.2em] text-primary">Entrega</p>
+                <h4 className="mt-3 text-lg font-semibold text-foreground">Produto pronto para crescer</h4>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  Desenvolvemos soluções pensadas para manter a marca consistente, profissional e competitiva.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-10 rounded-2xl border border-border/50 bg-background/40 p-5 md:p-6">
+              <div className="mb-6 text-center">
+                <p className="text-sm font-medium uppercase tracking-[0.2em] text-primary">Perguntas frequentes</p>
+                <h4 className="mt-3 text-xl md:text-2xl font-bold text-foreground">Tudo que você precisa saber antes do primeiro passo</h4>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                {faqItems.map((item) => (
+                  <div key={item.question} className="rounded-2xl border border-border/50 bg-secondary/20 p-4 md:p-5">
+                    <h5 className="text-base font-semibold text-foreground">{item.question}</h5>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.answer}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-8 flex flex-col items-center justify-between gap-4 rounded-2xl border border-primary/20 bg-primary/5 p-4 md:flex-row md:p-5">
+              <p className="text-center text-base text-foreground md:text-left">
+                Pronto para transformar sua presença digital em uma experiência que converte?
+              </p>
+              <a
+                href="#contato"
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+              >
+                Falar com a Webyte
+                <ArrowRight className="h-4 w-4" />
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </section>

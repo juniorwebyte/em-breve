@@ -5,6 +5,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { ParticleBackground } from "@/components/particle-background"
 import { GameSection } from "@/components/game/game-section"
+import { ValueProofSection } from "@/components/value-proof-section"
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
       <Header />
       <HeroSection />
       <GameSection />
+      <ValueProofSection />
       <AboutSection />
       <ContactSection />
       <Footer />
